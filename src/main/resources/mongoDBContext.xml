@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd 
+						http://www.springframework.org/schema/aop
+					 	http://www.springframework.org/schema/aop/spring-aop.xsd
+					 	http://www.springframework.org/schema/data/mongo       
+       					http://www.springframework.org/schema/data/mongo/spring-mongo.xsd 
+					 	http://www.springframework.org/schema/tx
+					 	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="mongoSeedl" class="com.mongodb.ServerAddress">
+            <constructor-arg type="java.lang.String" name="host" value="${mongo.host}" />
+            <constructor-arg type="int" name="port" value="${mongo.port}" />
+    </bean>
+	
+	<!-- Seeds -->
+    <bean id="mongoSeedList" class="java.util.ArrayList">
+    <constructor-arg>
+        <list>
+            <ref bean="mongoSeedl" />
+        </list>
+    </constructor-arg>
+    </bean>
+
+	 <!-- MongoClient -->
+    <bean id="mongoClient" class="com.mongodb.MongoClient">
+            <constructor-arg ref="mongoSeedList" />
+    </bean>
+	
+	
+	<bean id="simpleMongoDbFactory" class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+        <constructor-arg ref="mongoClient" />
+        <constructor-arg name="databaseName" value="${mongo.dbname}" />
+    </bean>
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg ref="simpleMongoDbFactory" />
+	</bean>
+	
+<!-- <bean id="objectStoreService"
+		class="com.dxhy.objectStore.service.impl.ObjectStoreServiceImpl">
+	</bean>
+	<bean id="objectStoreController"
+		class="com.dxhy.objectStore.ObjectStoreController">
+	</bean> -->
+</beans>
